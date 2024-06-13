@@ -17,12 +17,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-            .csrf().disable() // Disable CSRF for simplicity, enable in production
-            .authorizeRequests()
-                .antMatchers("/").authenticated() // Protect /app/** endpoints
-                .antMatchers("/index.html").permitAll() // Protect /app/** endpoints
-                .antMatchers("/static/**").authenticated() ;// Protect /app/** endpoints
-//                .anyRequest().authenticated() ;// Allow all other requests
+                .csrf().disable() // Disable CSRF for simplicity, enable in production
+                .authorizeRequests()
+                .antMatchers("/app/static/**", "/app/css/**", "/app/js/**", "/app/images/**").permitAll() // Allow access to static resources
+                .antMatchers("/app/**").authenticated();
+//                .anyRequest().authenticated() ;// authenticate all requests
 //                .and()
 //            .formLogin()
 //                .loginPage("/login") // Custom login page
@@ -35,9 +34,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
-            .withUser("user").password("{noop}password").roles("USER") // NoOpPasswordEncoder for simplicity
-            .and()
-            .withUser("admin").password("{noop}admin").roles("ADMIN");
+                .withUser("user").password("{noop}password").roles("USER") // NoOpPasswordEncoder for simplicity
+                .and()
+                .withUser("admin").password("{noop}admin").roles("ADMIN");
     }
 
     @Bean
